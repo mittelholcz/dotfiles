@@ -1,0 +1,168 @@
+""" plugins
+
+source ~/.vimplug
+
+""" load sensible.vim before vimrc
+runtime! plugin/sensible.vim
+
+" enable omnicompletition (kell ez?)
+set omnifunc=syntaxcomplete#Complete
+
+""" search
+" set incsearch
+set hlsearch
+set ignorecase
+set smartcase
+
+
+""" tab, indentation
+set tabstop=4
+set softtabstop=4
+set shiftwidth=4
+set expandtab
+set smarttab
+set shiftround
+
+
+""" no backup
+set nobackup
+set nowritebackup
+set noswapfile
+
+
+""" wildmenu
+" set wildmenu
+set wildmode=list:longest,full
+set wildignore=*.swp,*.bak,*.pyc,*.class,*/.git/**/*,*/.svn/**/*,*.tar.*
+set wildcharm=<Tab>
+try
+    set wildignorecase
+catch
+endtry
+
+
+""" parentheses
+set showmatch
+set matchtime=2
+
+
+""" misc
+set mouse=a
+set scrolloff=3
+set wrap
+set showcmd
+set number
+set hidden
+set cursorline
+
+
+""" treating old versions of vim
+try
+    set colorcolumn=80
+catch
+endtry
+
+
+""" statusline
+function! StatuslineGit()
+    let l:branchname = gitbranch#name()
+    return strlen(l:branchname) > 0 ? '| '.l:branchname : ''
+endfunction
+set laststatus=2
+set statusline=
+if $USER=='root'    
+    set statusline+=%#Error#ROOT%#inverse#
+else
+    set statusline+=%{$USER}
+endif
+set statusline+=@%{hostname()}
+set statusline+=:%F%m\ %{StatuslineGit()}
+set statusline+=%=\[%{&fileencoding?&fileencoding:&encoding},\ %{&fileformat}\]
+set statusline+=\ %p%%\ %l:%c\ 
+
+" set showtabline=2
+set guioptions-=e
+
+
+""" colorscheme, background
+" set t_Co=256
+colorscheme default
+set background=dark
+" set background=light
+
+
+""" F U N C T I O N S
+function! BackgroundToggle()
+    if (&background ==? "light")
+        set background=dark
+    else
+        set background=light
+    endif
+endfunction
+
+""" M A P P I N G
+let g:inform="INFO\n
+\\n
+\<F2>   :shell\n
+\<F3>   :make test\n
+\\n
+\<F5>   :pastetoggle\n
+\<F6>   :GitGutterToggle\n
+\<F7>   :BackgroundToggle\n
+\<F8>   :list!\n
+\\n
+\\\b     :buffer\n
+\\\ps    :PlugStatus\n
+\\\pi    :PlugInstall\n
+\\\pu    :PlugUpdate\n
+\\\pp    :PlugUpgrade\n
+\\\pc    :PlugClean\n
+\"
+" shell: F2
+noremap <F2> :sh<CR>
+" make: F3
+noremap <F3> :make
+
+" paste toggle: F5
+set pastetoggle=<F5>
+" gitgutter toggle: F6
+nnoremap <F6> :GitGutterToggle<CR>
+" change background and colorscheme
+noremap <F7> :call BackgroundToggle()<CR>
+" toggle list
+noremap <F8> :set list!<CR>
+" show information
+noremap <F12> :echo inform<CR>
+
+" buffers: \b, Alt + Arrows
+" nnoremap <M-Right> :bn<Enter>
+" nnoremap <M-Left> :bp<Enter>
+nnoremap <Leader>b :buffer <Tab><Tab>
+
+" show status of plugins
+nnoremap <Leader>ps :PlugStatus<CR>
+" install plugins
+nnoremap <Leader>pi :PlugInstall<CR>
+" update plugins
+nnoremap <Leader>pu :PlugUpdate<CR>
+" update vim-plug
+nnoremap <Leader>pp :PlugUpgrade<CR>
+" clean plugins
+nnoremap <Leader>pc :PlugClean<CR>
+
+""" bash (emacs) like shortcuts in commandline-mode
+" Move start of the line
+cnoremap <C-a>  <Home>
+" Move end of the line
+cnoremap <C-e>  <End>
+" Move one word left
+cnoremap <M-b>  <S-Left>
+" Move one word right
+cnoremap <M-f>  <S-Right>
+" Delete one word left: Ctrl+W, this is the default
+" cnoremap <C-w>  <S-left><Delete>
+" Delete one word right
+cnoremap <M-d>  <S-right><Delete>
+" " omnicomplete: Ctrl+Space
+" inoremap <NUL> <C-x><C-o>
+

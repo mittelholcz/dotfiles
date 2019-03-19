@@ -1,0 +1,252 @@
+# ~/.bashrc: executed by bash(1) for non-login shells.
+# see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
+# for examples
+
+# If not running interactively, don't do anything
+case $- in
+    *i*) ;;
+      *) return;;
+esac
+
+# don't put duplicate lines or lines starting with space in the history.
+# See bash(1) for more options
+HISTCONTROL=ignoreboth
+
+# append to the history file, don't overwrite it
+shopt -s histappend
+
+# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
+HISTSIZE=1000
+HISTFILESIZE=2000
+
+# check the window size after each command and, if necessary,
+# update the values of LINES and COLUMNS.
+shopt -s checkwinsize
+
+# If set, the pattern "**" used in a pathname expansion context will
+# match all files and zero or more directories and subdirectories.
+shopt -s globstar
+
+# make less more friendly for non-text input files, see lesspipe(1)
+[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
+
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# P R O M P T ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# set variable identifying the chroot you work in (used in the prompt below)
+if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
+    debian_chroot=$(cat /etc/debian_chroot)
+fi
+
+# set a fancy prompt (non-color, unless we know we "want" color)
+case "$TERM" in
+    xterm-color|*-256color) color_prompt=yes;;
+esac
+
+# uncomment for a colored prompt, if the terminal has the capability; turned
+# off by default to not distract the user: the focus in a terminal window
+# should be on the output of commands, not on the prompt
+force_color_prompt=yes
+
+if [ -n "$force_color_prompt" ]; then
+    if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
+	# We have color support; assume it's compliant with Ecma-48
+	# (ISO/IEC-6429). (Lack of such support is extremely rare, and such
+	# a case would tend to support setf rather than setaf.)
+	color_prompt=yes
+    else
+	color_prompt=
+    fi
+fi
+
+
+### FUNCTIONS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+function get_color() {
+    local red='\033[1;31m'
+    local green='\033[1;32m'
+    local yellow='\033[1;33m'
+    local blue='\033[1;34m'
+    local purple='\033[1;35m'
+    local cyan='\033[1;36m'
+    local white='\033[1;37m'
+    local nc='\033[0m' # no color
+    case $1 in
+        "red") echo "$red" ;;
+        "green") echo "$green" ;;
+        "yellow") echo "$yellow" ;;
+        "blue") echo "$blue" ;;
+        "purple") echo "$purple" ;;
+        "cyan") echo "$cyan" ;;
+        "white") echo "$white" ;;
+        "nc") echo "$nc" ;;
+        *) echo "$nc" ;;
+    esac
+}
+
+# return true if user is remote or false if user is logged in locally 
+function isuserremote() {
+    # get actual tty
+    MYTTY=$(tty)
+    MYTTY=$(echo ${MYTTY:5})
+
+    # get user related infos from command `w`
+    WTTYFROM=$(w -h ${USER} | sed -r 's/^\S+\s+(\S+)\s+(\S+).*/\1 \2/')
+
+    # select relevant line from output of `w`
+    UNI1=$(echo -n "$WTTYFROM" | egrep "$MYTTY")
+    UNI2=$(echo -n "$WTTYFROM" | egrep ":[0-9]")
+    if [ "$UNI1" ] ; then
+        WTTYFROM=$UNI1
+    elif [ "$UNI2" ] ; then
+        WTTYFROM=$UNI2
+    else
+        WTTYFROM=$(echo "$WTTYFROM" | head -n1)
+    fi
+
+    # parse infos
+    WTTY=$(echo $WTTYFROM | cut -f1 -d' ')
+    WFROM=$(echo $WTTYFROM | cut -f2 -d' ')
+
+    # decide (TODO: maybe a better solution to match against IP number)
+    if echo $WFROM | egrep -q '^[:-]' ; then
+        return 1;
+    else
+        return 0;
+    fi
+}
+
+### show ranger/vim in prompt
+function get_prefix() {
+    local PREFIX=''
+    if [ -n "$RANGER_LEVEL" ]; then
+        PREFIX+='r'
+    fi
+    if [ -n "$VIM" ]; then
+        PREFIX+='v'
+    fi
+    if [ -n "$PREFIX" ] ; then
+        PREFIX="$(get_color purple)[${PREFIX}]$(get_color nc) "
+    fi
+    echo -e "${PREFIX}"
+}
+
+### show user@host in prompt if important (if user is root or remote)
+function get_userathost(){
+    local USERATHOST=''
+    if [ "$USER" = "root" ]; then
+        USERATHOST="$(get_color red)ROOT$(get_color green)@\h$(get_color nc)"
+    else
+        if isuserremote ; then
+            USERATHOST="$(get_color green)\u@\h$(get_color nc)"
+        fi
+    fi
+    echo -e $USERATHOST
+}
+
+### show working dir
+function get_workdir() {
+    echo -e ":$(get_color blue)\w$(get_color nc)"
+}
+
+### suffix
+function get_suffix() {
+    if [ "$USER" = "root" ]; then
+        echo -e "$(get_color red)#$(get_color nc) "
+    else
+        echo -e "$(get_color white)\$$(get_color nc) "
+    fi
+}
+
+# prompt
+if [ "$color_prompt" = yes ]; then
+    source ~/.git-prompt.sh
+    export GIT_PS1_SHOWCOLORHINTS=true
+    export GIT_PS1_SHOWDIRTYSTATE=true
+    export GIT_PS1_SHOWUNTRACKEDFILES=true
+    export GIT_PS1_SHOWUPSTREAM="auto"
+    export PROMPT_COMMAND='__git_ps1 "$(echo -en "\[\e]0;\u@\h: \w\a\]")$(get_prefix)$(get_userathost)$(get_workdir)" "$(get_suffix)"'
+else
+    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+fi
+unset color_prompt force_color_prompt
+
+# If this is an xterm set the title to user@host:dir
+case "$TERM" in
+xterm*|rxvt*)
+    # PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
+    ;;
+*)
+    ;;
+esac
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+# colored GCC warnings and errors
+export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
+
+# enable programmable completion features (you don't need to enable
+# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
+# sources /etc/bash.bashrc).
+if ! shopt -oq posix; then
+  if [ -f /usr/share/bash-completion/bash_completion ]; then
+    . /usr/share/bash-completion/bash_completion
+  elif [ -f /etc/bash_completion ]; then
+    . /etc/bash_completion
+  fi
+fi
+
+# ALIASES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# Add an "alert" alias for long running commands.  Use like so:
+#   sleep 10; alert
+alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
+
+# enable color support of ls and also add handy aliases
+if [ -x /usr/bin/dircolors ]; then
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    alias ls='ls --color=auto --group-directories-first'
+    alias dir='dir --color=auto'
+    alias vdir='vdir --color=auto'
+
+    alias diff='diff --color=auto'
+
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
+else
+    alias ls='ls --group-directories-first'
+fi
+
+# some more ls aliases
+# alias ll='ls -alF'
+# alias la='ls -A'
+# alias l='ls -CF'
+alias ll='ls -lFvh'
+alias la='ls -AlFvh'
+alias l='ls -CFv'
+
+# misc aliases
+alias tmaps='telnet mapscii.me'
+alias tweath='curl wttr.in'
+alias purevim='vim -u $HOME/.purevimrc'
+
+
+# view markdown files in terminal
+md() {
+    CONVERT=`{ command -v pandoc && echo -n '-f markdown_github -t html5 -s $1'; }`
+    if ! [ "$CONVERT" ] ; then
+        echo  'No markdown2html converter. Please install pandoc!';
+        return;
+    fi
+    DISPLAY=`{ command -v lynx && echo -n '-stdin -vikeys'; } || { command -v w3m && echo -n '-T text/html'; }`
+    if ! [ "$DISPLAY" ] ; then
+        echo  'No commandline browser. Please install lynx or w3m!';
+        return;
+    fi
+    eval $CONVERT | eval $DISPLAY;
+}

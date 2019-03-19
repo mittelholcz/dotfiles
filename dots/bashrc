@@ -1,0 +1,4 @@
+# include mybashrc
+if [ -f ~/.mybashrc ]; then
+    . ~/.mybashrc
+fi
