@@ -27,3 +27,7 @@ My dotfiles and setup scripts.
   ```sh
   make desktop
   ```
+* Install docker-CE, add the current user to the *docker* group:
+  ```sh
+  make docker
+  ```
