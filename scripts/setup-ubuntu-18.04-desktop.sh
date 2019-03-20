@@ -8,6 +8,7 @@ sudo ubuntu-drivers autoinstall
 
 # install basic command line tools
 sudo apt-get install -y \
+    lsb-core \
     aptitude htop \
     vim tmux \
     make \

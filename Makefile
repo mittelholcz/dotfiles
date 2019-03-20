@@ -59,3 +59,8 @@ vim: vim/vimrc
 desktop: scripts/setup-ubuntu-18.04-desktop.sh
 	@./$<
 .PHONY: desktop
+
+
+docker: scripts/install-docker.sh
+	@sudo ./$< $${USER}
+.PHONY: docker
