@@ -4,8 +4,10 @@ all: shell vim
 
 shell: dots/bashrc dots/mybashrc dots/bash_logout dots/inputrc /usr/lib/git-core/git-sh-prompt
 	@echo 'Shell ... '
-	@cp -fb /usr/lib/git-core/git-sh-prompt ~/.git-prompt.sh
+	@mkdir -p ~/bin
+	# @cp -fb /usr/lib/git-core/git-sh-prompt ~/.git-prompt.sh
 	@cp -fb dots/bashrc ~/.bashrc
+	@ln -rsf scripts/bash_prompt.sh ~/bin/
 	@[ -L ~/.mybashrc ] \
 		&& echo '.mybashrc is a symlink' \
 		|| ln -rsb dots/mybashrc ~/.mybashrc

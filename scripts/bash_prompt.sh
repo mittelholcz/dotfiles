@@ -139,6 +139,17 @@ function git_status() {
     echo -n "${res}"
 }
 
+if [ -f '/usr/lib/git-core/git-sh-prompt' ] ; then
+    source /usr/lib/git-core/git-sh-prompt
+    # export GIT_PS1_SHOWCOLORHINTS=true
+    export GIT_PS1_SHOWSTASHSTATE='y'
+    export GIT_PS1_SHOWDIRTYSTATE=true
+    export GIT_PS1_SHOWUNTRACKEDFILES=true
+    export GIT_PS1_SHOWUPSTREAM="auto"
+    echo -ne "$(settitle)$(prefix)$(userhostdir)$(__git_ps1)\\$ "
+else
+    echo -ne "$(settitle)$(prefix)$(userhostdir)$(git_status)\\$ "
+fi
 
-echo -ne "$(settitle)$(prefix)$(userhostdir)$(git_status)\\$ "
+
 
