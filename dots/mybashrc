@@ -172,6 +172,22 @@ function settitle() {
 }
 
 
+function git_branch() {
+    # no git or not in repo: exit
+	if [ -z $(which git) ] || ! git -C . rev-parse 2>/dev/null ; then
+		echo ''
+		exit 0
+	fi
+    local res=''
+    # get branch or commit hash
+    res=$(git status --branch 2> /dev/null | head -n1 | sed -r 's/.*\s(\w+)$/\1/')
+	if [ "${res}" ] ; then
+        res=" (${res})"
+	fi
+    echo -n "${res}"
+}
+
+
 # prompt
 if [ "$color_prompt" = yes ]; then
     if [ -f '/usr/lib/git-core/git-sh-prompt' ] ; then
@@ -184,7 +200,7 @@ if [ "$color_prompt" = yes ]; then
         export PS1=$(__git_ps1 "$(settitle)$(prefix)$(userhostdir)" "\\$ ")
         export PROMPT_COMMAND='__git_ps1 "$(settitle)$(prefix)$(userhostdir)" "\\$ "'
     else
-        export PS1="$(settitle)$(prefix)$(userhostdir)\\$ "
+        export PS1="$(settitle)$(prefix)$(userhostdir)$(git_branch)\\$ "
     fi
 else
     PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '

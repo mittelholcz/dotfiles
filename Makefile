@@ -2,7 +2,7 @@ all: shell vim
 .PHONY: all
 
 
-shell: dots/bashrc dots/mybashrc dots/bash_logout dots/inputrc /usr/lib/git-core/git-sh-prompt
+shell: dots/bashrc dots/mybashrc dots/bash_logout dots/inputrc
 	@echo 'Shell ... '
 	@mkdir -p ~/bin
 	@cp -fb dots/bashrc ~/.bashrc
@@ -21,13 +21,10 @@ shell: dots/bashrc dots/mybashrc dots/bash_logout dots/inputrc /usr/lib/git-core
 
 restore_shell:
 	@echo 'Restore default .bashrc, .bash_logout and .inputrc.'
-	@rm -f ~/.git-prompt.sh
 	@rm -f ~/.bashrc
 	@rm -f ~/.mybashrc
 	@rm -f ~/.bash_logout
 	@rm -f ~/.inputrc
-	@[ -f ~/.git-prompt.sh~ ] && mv ~/.git-prompt.sh~ ~/.git-prompt.sh \
-		|| echo 'original git-prompt.sh do not exist'
 	@[ -f ~/.bashrc~ ] && mv ~/.bashrc~ ~/.bashrc \
 		|| echo 'original bashrc do not exist'
 	@[ -f ~/.bash_logout~ ] && mv ~/.bash_logout~ ~/.bash_logout \
