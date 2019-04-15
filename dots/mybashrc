@@ -141,6 +141,9 @@ function prefix() {
     if [ -n "$VIM" ]; then
         PREFIX+='v'
     fi
+    if [ -n "$MC_SID" ]; then
+        PREFIX+='m'
+    fi
     if [ -n "$PREFIX" ] ; then
         PREFIX=$(colortext b_magenta "[${PREFIX}] ")
     fi
