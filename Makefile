@@ -5,16 +5,17 @@ all: shell vim
 shell: dots/bashrc dots/mybashrc dots/bash_logout dots/inputrc
 	@echo 'Shell ... '
 	@mkdir -p ~/bin
+	@curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-prompt.sh >~/bin/git-prompt.sh
 	@cp -fb dots/bashrc ~/.bashrc
 	@[ -L ~/.mybashrc ] \
 		&& echo '.mybashrc is a symlink' \
-		|| ln -rsb dots/mybashrc ~/.mybashrc
+		|| ln -sb $$(pwd)/dots/mybashrc ~/.mybashrc
 	@[ -L ~/.bash_logout ] \
 		&& echo '.bash_logout is a symlink' \
-		|| ln -rsb dots/bash_logout ~/.bash_logout
+		|| ln -sb $$(pwd)/dots/bash_logout ~/.bash_logout
 	@[ -L ~/.inputrc ] \
 		&& echo '.inputrc is a symlink' \
-		|| ln -rsb dots/inputrc ~/.inputrc
+		|| ln -sb $$(pwd)/dots/inputrc ~/.inputrc
 	@echo 'Done.'
 .PHONY: shell
 

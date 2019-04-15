@@ -31,6 +31,18 @@ shopt -s globstar
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
 
+# enable programmable completion features (you don't need to enable
+# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
+# sources /etc/bash.bashrc).
+if ! shopt -oq posix; then
+  if [ -f /usr/share/bash-completion/bash_completion ]; then
+    . /usr/share/bash-completion/bash_completion
+  elif [ -f /etc/bash_completion ]; then
+    . /etc/bash_completion
+  fi
+fi
+
+
 # set variable identifying the chroot you work in (used in the prompt below)
 if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
     debian_chroot=$(cat /etc/debian_chroot)
@@ -172,35 +184,19 @@ function settitle() {
 }
 
 
-function git_branch() {
-    # no git or not in repo: exit
-	if [ -z $(which git) ] || ! git -C . rev-parse 2>/dev/null ; then
-		echo ''
-		exit 0
-	fi
-    local res=''
-    # get branch or commit hash
-    res=$(git status --branch 2> /dev/null | head -n1 | sed -r 's/.*\s(\w+)$/\1/')
-	if [ "${res}" ] ; then
-        res=" (${res})"
-	fi
-    echo -n "${res}"
-}
-
-
 # prompt
 if [ "$color_prompt" = yes ]; then
-    if [ -f '/usr/lib/git-core/git-sh-prompt' ] ; then
-        source /usr/lib/git-core/git-sh-prompt
+    if [ -f "${HOME}/bin/git-prompt.sh" ] ; then
         export GIT_PS1_SHOWCOLORHINTS=true
         export GIT_PS1_SHOWSTASHSTATE='y'
         export GIT_PS1_SHOWDIRTYSTATE=true
         export GIT_PS1_SHOWUNTRACKEDFILES=true
         export GIT_PS1_SHOWUPSTREAM="auto"
+        source ~/bin/git-prompt.sh
         export PS1=$(__git_ps1 "$(settitle)$(prefix)$(userhostdir)" "\\$ ")
         export PROMPT_COMMAND='__git_ps1 "$(settitle)$(prefix)$(userhostdir)" "\\$ "'
     else
-        export PS1="$(settitle)$(prefix)$(userhostdir)$(git_branch)\\$ "
+        export PS1="$(settitle)$(prefix)$(userhostdir)\\$ "
     fi
 else
     PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
@@ -219,17 +215,6 @@ esac
 
 # colored GCC warnings and errors
 export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
-
-# enable programmable completion features (you don't need to enable
-# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
-# sources /etc/bash.bashrc).
-if ! shopt -oq posix; then
-  if [ -f /usr/share/bash-completion/bash_completion ]; then
-    . /usr/share/bash-completion/bash_completion
-  elif [ -f /etc/bash_completion ]; then
-    . /etc/bash_completion
-  fi
-fi
 
 # ALIASES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
