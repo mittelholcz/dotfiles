@@ -249,7 +249,7 @@ alias l='ls -CFv'
 # misc aliases
 alias tmaps='telnet mapscii.me'
 alias tweath='curl wttr.in'
-alias purevim='vim -u $HOME/.purevimrc'
+alias purevim='vim -u $HOME/.vim/purevimrc'
 
 
 # view markdown files in terminal

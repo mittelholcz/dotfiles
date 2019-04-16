@@ -38,17 +38,15 @@ restore_shell:
 
 vim: vim/vimrc
 	@echo 'Vim:'
-	@[ -z $$(which vim) ] \
-		&& { echo 'Intsall vim before run this target!' ; exit 1 ; } \
-		|| exit 0
+	@[ $$(which vim) ] || { echo 'Vim is not installed!' ; exit 1 ; }
+	@rm -rf ~/.vim ; mkdir -p ~/.vim
+	@ln -sb $$(pwd)/vim/purevimrc ~/.vim/purevimrc
 	@[ -L ~/.vimrc ] && rm ~/.vimrc ; ln -sb $$(pwd)/vim/vimrc ~/.vimrc
-	@[ -L ~/.vimplug ] && rm ~/.vimplug ; ln -sb $$(pwd)/vim/vimplug ~/.vimplug
-	@curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
-		https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-	@vim -u vim/vimplug +PlugInstall +qall
-	@[ -L ~/.purevimrc ] \
-		&& echo '.purevimrc is a symlink' \
-		|| ln -sb $$(pwd)/vim/purevimrc ~/.purevimrc
+	@vim --version | head -n1 | egrep -q "7\.[0-2]" || { \
+		curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
+			https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim ; \
+		ln -sb $$(pwd)/vim/vimplug ~/.vim/vimplug ; \
+		vim -u ~/.vim/vimplug +PlugInstall +qall ; }
 	@echo 'Done.'
 .PHONY: vim
 

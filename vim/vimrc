@@ -1,6 +1,12 @@
 """ plugins
-
-source ~/.vimplug
+if v:version > 702
+    source ~/.vim/vimplug
+else
+    set nocompatible
+    filetype plugin on
+    syntax on
+    set number
+endif
 
 """ load sensible.vim before vimrc
 runtime! plugin/sensible.vim
@@ -76,7 +82,11 @@ else
     set statusline+=%{$USER}
 endif
 set statusline+=@%{hostname()}
-set statusline+=:%F%m\ %{StatuslineGit()}
+if v:version > 702
+    set statusline+=:%F%m\ %{StatuslineGit()}
+else
+    set statusline+=:%F%m\ 
+endif
 set statusline+=%=\[%{&fileencoding?&fileencoding:&encoding},\ %{&fileformat}\]
 set statusline+=\ %p%%\ %l:%c\ 
 
@@ -101,23 +111,37 @@ function! BackgroundToggle()
 endfunction
 
 """ M A P P I N G
-let g:inform="INFO\n
-\\n
-\<F2>   :shell\n
-\<F3>   :make test\n
-\\n
-\<F5>   :pastetoggle\n
-\<F6>   :GitGutterToggle\n
-\<F7>   :BackgroundToggle\n
-\<F8>   :list!\n
-\\n
-\\\b     :buffer\n
-\\\ps    :PlugStatus\n
-\\\pi    :PlugInstall\n
-\\\pu    :PlugUpdate\n
-\\\pp    :PlugUpgrade\n
-\\\pc    :PlugClean\n
-\"
+if v:version > 702
+    let g:inform="INFO\n
+    \\n
+    \<F2>   :shell\n
+    \<F3>   :make\n
+    \\n
+    \<F5>   :pastetoggle\n
+    \<F6>   :GitGutterToggle\n
+    \<F7>   :BackgroundToggle\n
+    \<F8>   :list!\n
+    \\n
+    \\\b     :buffer\n
+    \\\ps    :PlugStatus\n
+    \\\pi    :PlugInstall\n
+    \\\pu    :PlugUpdate\n
+    \\\pp    :PlugUpgrade\n
+    \\\pc    :PlugClean\n
+    \"
+else
+    let g:inform="INFO\n
+    \\n
+    \<F2>   :shell\n
+    \<F3>   :make test\n
+    \\n
+    \<F5>   :pastetoggle\n
+    \<F7>   :BackgroundToggle\n
+    \<F8>   :list!\n
+    \\n
+    \\\b     :buffer\n
+    \"
+endif
 " shell: F2
 noremap <F2> :sh<CR>
 " make: F3
@@ -126,7 +150,9 @@ noremap <F3> :make
 " paste toggle: F5
 set pastetoggle=<F5>
 " gitgutter toggle: F6
-nnoremap <F6> :GitGutterToggle<CR>
+if v:version > 702
+    nnoremap <F6> :GitGutterToggle<CR>
+endif
 " change background and colorscheme
 noremap <F7> :call BackgroundToggle()<CR>
 " toggle list
@@ -139,16 +165,18 @@ noremap <F12> :echo inform<CR>
 " nnoremap <M-Left> :bp<Enter>
 nnoremap <Leader>b :buffer <Tab><Tab>
 
-" show status of plugins
-nnoremap <Leader>ps :PlugStatus<CR>
-" install plugins
-nnoremap <Leader>pi :PlugInstall<CR>
-" update plugins
-nnoremap <Leader>pu :PlugUpdate<CR>
-" update vim-plug
-nnoremap <Leader>pp :PlugUpgrade<CR>
-" clean plugins
-nnoremap <Leader>pc :PlugClean<CR>
+if v:version > 702
+    " show status of plugins
+    nnoremap <Leader>ps :PlugStatus<CR>
+    " install plugins
+    nnoremap <Leader>pi :PlugInstall<CR>
+    " update plugins
+    nnoremap <Leader>pu :PlugUpdate<CR>
+    " update vim-plug
+    nnoremap <Leader>pp :PlugUpgrade<CR>
+    " clean plugins
+    nnoremap <Leader>pc :PlugClean<CR>
+endif
 
 """ bash (emacs) like shortcuts in commandline-mode
 " Move start of the line
