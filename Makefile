@@ -38,18 +38,17 @@ restore_shell:
 
 vim: vim/vimrc
 	@echo 'Vim:'
-	[ -z $$(which vim) ] \
+	@[ -z $$(which vim) ] \
 		&& { echo 'Intsall vim before run this target!' ; exit 1 ; } \
 		|| exit 0
-	@echo 'OK'
-	@[ -L ~/.vimrc ] && rm ~/.vimrc ; ln -rsb vim/vimrc ~/.vimrc
-	@[ -L ~/.vimplug ] && rm ~/.vimplug ; ln -rsb vim/vimplug ~/.vimplug
+	@[ -L ~/.vimrc ] && rm ~/.vimrc ; ln -sb $$(pwd)/vim/vimrc ~/.vimrc
+	@[ -L ~/.vimplug ] && rm ~/.vimplug ; ln -sb $$(pwd)/vim/vimplug ~/.vimplug
 	@curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
 		https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 	@vim -u vim/vimplug +PlugInstall +qall
 	@[ -L ~/.purevimrc ] \
 		&& echo '.purevimrc is a symlink' \
-		|| ln -rsb vim/purevimrc ~/.purevimrc
+		|| ln -sb $$(pwd)/vim/purevimrc ~/.purevimrc
 	@echo 'Done.'
 .PHONY: vim
 
