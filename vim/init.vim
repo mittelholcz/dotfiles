@@ -3,10 +3,11 @@ Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-characterize'
 Plug 'tpope/vim-unimpaired'
 Plug 'itchyny/vim-gitbranch'
+Plug 'itchyny/lightline.vim'
 Plug 'airblade/vim-gitgutter'
 " Plug 'alvan/vim-closetag'
 " Plug 'mechatroner/rainbow_csv'
-Plug 'w0rp/ale', {'do': 'pip3 install --user flake8 pylint yapf yamllint vim-vint ; npm install -g standard stylelint stylelint-processor-styled-components stylelint-config-styled-components stylelint-config-recommended stylelint-config-standard jsonlint'}
+" Plug 'w0rp/ale', {'do': 'pip3 install --user flake8 pylint yapf yamllint vim-vint ; npm install -g standard stylelint stylelint-processor-styled-components stylelint-config-styled-components stylelint-config-recommended stylelint-config-standard jsonlint'}
 " Plug 'davidhalter/jedi-vim'
 "
 " Plug 'fatih/vim-go' { 'do': ':GoInstallBinaries' }clojure
@@ -14,10 +15,10 @@ Plug 'w0rp/ale', {'do': 'pip3 install --user flake8 pylint yapf yamllint vim-vin
 " Plug 'mdempsky/gocode', { 'rtp': 'nvim', 'do': '~/.config/nvim/plugged/gocode/nvim/symlink.sh' }
 "
 " Plug 'junegunn/fzf', { 'do': './install --all' } | Plug 'junegunn/fzf.vim'
-Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+" Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 " Plug 'Shougo/echodoc.vim'
-Plug 'zchee/deoplete-jedi'
-Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern' }
+" Plug 'zchee/deoplete-jedi'
+" Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern' }
 " Plug 'Shougo/neosnippet.vim'
 " Plug 'Shougo/neosnippet-snippets'
 " Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
@@ -30,12 +31,8 @@ Plug 'carlitux/deoplete-ternjs', { 'do': 'npm install -g tern' }
 " " https://github.com/ncm2/ncm2 " -- ez is ilyen kiegeszitgetos cucc, mint a deoplete
 " Plug 'neomake/neomake'
 " Plug 'NLKNguyen/papercolor-theme'
-Plug 'itchyny/lightline.vim'
 call plug#end()
 
-
-" " enable omnicompletition (kell ez?)
-" set omnifunc=syntaxcomplete#Complete
 
 
 """ search
@@ -83,24 +80,6 @@ set clipboard+=unnamedplus
 let g:tex_flavor = 'latex'
 
 
-""" statusline
-set statusline=
-if $USER==#'root'
-    set statusline+=%#Error#ROOT%#inverse#
-else
-    set statusline+=%{$USER}
-endif
-set statusline+=@%{hostname()}
-if !empty(glob('~/.local/share/nvim/plugged/vim-gitbranch'))
-    function! StatuslineGit()
-        let l:branchname = gitbranch#name()
-        return strlen(l:branchname) > 0 ? '| '.l:branchname : ''
-    endfunction
-    set statusline+=:%F%m\ %{StatuslineGit()}
-endif
-set statusline+=%=\[%{&fileencoding?&fileencoding:&encoding},\ %{&fileformat}\]
-set statusline+=\ %p%%\ %l:%c\
-
 
 """ colorscheme, background
 colorscheme default
@@ -109,67 +88,67 @@ set background=dark
 " set background=light
 
 
-""" PLUGINS
-" ALE
-" Only run linters named in ale_linters settings.
-" let g:ale_linters_explicit = 1
-" let g:ale_fix_on_save = 1
-let g:ale_echo_msg_error_str = 'E'
-let g:ale_echo_msg_warning_str = 'W'
-let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
-let g:ale_linters = {
-    \   'css': ['stylelint'],
-    \   'scss': ['stylelint'],
-    \   'sass': [],
-    \   'less': ['stylelint'],
-    \   'javascript': ['standard'],
-    \   'json': ['jsonlint'],
-    \   'markdown': ['markdownlint'],
-    \   'python': ['pylint', 'flake8'],
-    \   'sh': ['shellcheck'],
-    \   'tex': ['lacheck'],
-    \   'vim': ['vint'],
-    \   'xml': ['xmllint'],
-    \   'yaml': ['yamllint'],
-\}
-let g:ale_fixers = {
-    \   'css': ['stylelint'],
-    \   'scss': ['stylelint'],
-    \   'sass': [],
-    \   'less': ['stylelint'],
-    \   'go': ['gofmt', 'goimports'],
-    \   'html': ['tidy'],
-    \   'javascript': ['standard'],
-    \   'python': ['yapf'],
-    \   'xml': ['xmllint'],
-    \   '*': ['remove_trailing_lines', 'trim_whitespace'],
-\}
+" """ PLUGINS
+" " ALE
+" " Only run linters named in ale_linters settings.
+" " let g:ale_linters_explicit = 1
+" " let g:ale_fix_on_save = 1
+" let g:ale_echo_msg_error_str = 'E'
+" let g:ale_echo_msg_warning_str = 'W'
+" let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
+" let g:ale_linters = {
+    " \   'css': ['stylelint'],
+    " \   'scss': ['stylelint'],
+    " \   'sass': [],
+    " \   'less': ['stylelint'],
+    " \   'javascript': ['standard'],
+    " \   'json': ['jsonlint'],
+    " \   'markdown': ['markdownlint'],
+    " \   'python': ['pylint', 'flake8'],
+    " \   'sh': ['shellcheck'],
+    " \   'tex': ['lacheck'],
+    " \   'vim': ['vint'],
+    " \   'xml': ['xmllint'],
+    " \   'yaml': ['yamllint'],
+" \}
+" let g:ale_fixers = {
+    " \   'css': ['stylelint'],
+    " \   'scss': ['stylelint'],
+    " \   'sass': [],
+    " \   'less': ['stylelint'],
+    " \   'go': ['gofmt', 'goimports'],
+    " \   'html': ['tidy'],
+    " \   'javascript': ['standard'],
+    " \   'python': ['yapf'],
+    " \   'xml': ['xmllint'],
+    " \   '*': ['remove_trailing_lines', 'trim_whitespace'],
+" \}
 
-" DEOPLETE
-let g:deoplete#enable_at_startup = 1
-let g:deoplete#sources#jedi#show_docstring = 0
-" let g:deoplete#sources#jedi#enable_typeinfo = 0
-" let g:deoplete#sources#jedi#show_docstring = 1
-let g:deoplete#sources#jedi#enable_typeinfo = 1
-" set splitright
-" autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif
-set completeopt-=preview
+" " DEOPLETE
+" let g:deoplete#enable_at_startup = 1
+" let g:deoplete#sources#jedi#show_docstring = 0
+" " let g:deoplete#sources#jedi#enable_typeinfo = 0
+" " let g:deoplete#sources#jedi#show_docstring = 1
+" let g:deoplete#sources#jedi#enable_typeinfo = 1
+" " set splitright
+" " autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif
+" set completeopt-=preview
 
-" ECHODOC
-" set cmdheight=2
-set noshowmode
-" TODO: ha lesz lightline, akkor ezek nem kellenek
+" " ECHODOC
+" " set cmdheight=2
+" set noshowmode
+" " TODO: ha lesz lightline, akkor ezek nem kellenek
 
-" TERN
-" let g:deoplete#sources#ternjs#timeout = 1
-let g:deoplete#sources#ternjs#types = 1
-let g:deoplete#sources#ternjs#docs = 1
-let g:deoplete#sources#ternjs#case_insensitive = 1
-let g:deoplete#sources#ternjs#filetypes = [
-                \ 'jsx',
-                \ 'javascript.jsx',
-                \ 'vue',
-                \ ]
+" " TERN
+" " let g:deoplete#sources#ternjs#timeout = 1
+" let g:deoplete#sources#ternjs#types = 1
+" let g:deoplete#sources#ternjs#docs = 1
+" let g:deoplete#sources#ternjs#case_insensitive = 1
+" let g:deoplete#sources#ternjs#filetypes = [
+                " \ 'jsx',
+                " \ 'javascript.jsx',
+                " \ 'vue',
+                " \ ]
 
 
 
@@ -187,7 +166,7 @@ endfunction
 let g:inform="INFO -- NVIM\n
 \\n
 \<F2>   :terminal\n
-\<F3>   :make test\n
+\<F3>   :make\n
 \<F4>   :Fix syntax\n
 \\n
 \<F5>   :syntaxcheck toggle\n
@@ -207,7 +186,7 @@ let g:inform="INFO -- NVIM\n
 " shell: F2
 noremap <F2> :te<CR>A
 " make: F3
-noremap <F3> :make test<CR>
+noremap <F3> :make 
 " Fix syntactic
 noremap <F4> :ALEFix<CR>
 " TODO: next/prev error
@@ -227,8 +206,8 @@ noremap <F12> :echo inform<CR>
 " nnoremap <M-Right> :bn<Enter>
 " nnoremap <M-Left> :bp<Enter>
 nnoremap <Leader>b :buffer <Tab><Tab>
-nnoremap <Leader>sn :ALENextWrap<CR>
-nnoremap <Leader>sp :ALEPreviousWrap<CR>
+" nnoremap <Leader>sn :ALENextWrap<CR>
+" nnoremap <Leader>sp :ALEPreviousWrap<CR>
 
 " show status of plugins
 nnoremap <Leader>ps :PlugStatus<CR>

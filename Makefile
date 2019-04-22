@@ -51,6 +51,11 @@ vim: vim/vimrc
 .PHONY: vim
 
 
+neovim: scripts/install-neovim.sh
+	@./$<
+.PHONY: neovim
+
+
 desktop: scripts/setup-ubuntu-18.04-desktop.sh
 	@./$<
 .PHONY: desktop
