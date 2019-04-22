@@ -88,7 +88,23 @@ set background=dark
 " set background=light
 
 
-" """ PLUGINS
+""" PLUGINS
+
+" lightline
+set noshowmode
+let g:lightline = {
+      \ 'active': {
+      \   'left': [ [ 'mode', 'paste' ],
+      \             [ 'gitbranch', 'readonly', 'filename', 'modified' ] ]
+      \ },
+      \ 'component_function': {
+      \   'gitbranch': 'gitbranch#name'
+      \ },
+      \ }
+
+
+
+
 " " ALE
 " " Only run linters named in ale_linters settings.
 " " let g:ale_linters_explicit = 1
