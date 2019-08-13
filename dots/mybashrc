@@ -245,7 +245,9 @@ if [ -x /usr/bin/dircolors ]; then
     alias dir='dir --color=auto'
     alias vdir='vdir --color=auto'
 
-    alias diff='diff --color=auto'
+    if (( $(echo "$(/usr/bin/diff -v | head -n1 | egrep -o '[0-9.]+') > 3.3" | bc -l) )); then
+        alias diff='diff --color=auto'
+    fi
 
     alias grep='grep --color=auto'
     alias fgrep='fgrep --color=auto'
