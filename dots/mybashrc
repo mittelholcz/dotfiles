@@ -183,6 +183,22 @@ function settitle() {
     echo -en "\[\e]0;\u@\h: \w\a\]"
 }
 
+function pythonprompt() {
+    # get version (python2 print to strerr, python3 to stdout)
+    local res="$(python -V 2>&1)"
+    # reduce version number to major + minor
+    res=$(echo "$res" | grep -P -o '\d+.\d+')
+    res="py${res}"
+    if [ "${VIRTUAL_ENV}" ] ; then
+        # venv, pipenv
+        res+="|V:$(basename $(echo ${VIRTUAL_ENV}))"
+    elif [ "${CONDA_PROMPT_MODIFIER}" ] ; then
+        # conda
+        res+="|C:$(echo ${CONDA_PROMPT_MODIFIER} | sed -r 's/[() ]//g')"
+    fi
+    res=$(colortext cyan " [$res]")
+    echo -n "$res"
+}
 
 # prompt
 if [ "$color_prompt" = yes ]; then
@@ -193,8 +209,8 @@ if [ "$color_prompt" = yes ]; then
         export GIT_PS1_SHOWUNTRACKEDFILES=true
         export GIT_PS1_SHOWUPSTREAM="auto"
         source ~/bin/git-prompt.sh
-        export PS1=$(__git_ps1 "$(settitle)$(prefix)$(userhostdir)" "\\$ ")
-        export PROMPT_COMMAND='__git_ps1 "$(settitle)$(prefix)$(userhostdir)" "\\$ "'
+        export PS1=$(__git_ps1 "$(settitle)$(prefix)$(userhostdir)$(pythonprompt)" "\\$ ")
+        export PROMPT_COMMAND='__git_ps1 "$(settitle)$(prefix)$(userhostdir)$(pythonprompt)" "\\$ "'
     else
         export PS1="$(settitle)$(prefix)$(userhostdir)\\$ "
     fi
