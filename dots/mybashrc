@@ -150,15 +150,14 @@ function pythonprompt() {
     # reduce version number to major + minor
     res=$(echo "$res" | grep -P -o '\d+.\d+')
     if [ "$res" ] ; then
-        res="py${res}"
-        # TODO: separate toogle command for details
-        # if [ "${VIRTUAL_ENV}" ] ; then
-        #     # venv, pipenv
-        #     res+="(V:$(basename $(echo ${VIRTUAL_ENV})))"
-        # elif [ "${CONDA_PROMPT_MODIFIER}" ] ; then
-        #     # conda
-        #     res+="(C:$(echo ${CONDA_PROMPT_MODIFIER} | sed -r 's/[() ]//g'))"
-        # fi
+        res="$(colortext b_magenta py${res})"
+        if [ "${VIRTUAL_ENV}" ] ; then
+            # venv, pipenv
+            res+="(V:$(basename $(echo ${VIRTUAL_ENV})))"
+        elif [ "${CONDA_PROMPT_MODIFIER}" ] ; then
+            # conda
+            res+="(C:$(echo ${CONDA_PROMPT_MODIFIER} | sed -r 's/[() ]//g'))"
+        fi
     fi
     echo -n "$res"
 }
@@ -166,7 +165,7 @@ function pythonprompt() {
 
 # show ranger/vim in prompt
 function prefix() {
-    local PYPREFIX="$(colortext b_magenta $(pythonprompt))"
+    local PYPREFIX="$(pythonprompt)"
     local MCPREFIX=$([ "$MC_SID" ] && echo "|$(colortext cyan 'mc')" || echo "")
     local RAPREFIX=$([ "$RANGER_LEVEL" ] && echo "|$(colortext cyan 'Ra')" || echo "")
     local VIPREFIX=$([ "$VIM" ] && echo "|$(colortext yellow 'Vi')" || echo "")
