@@ -50,6 +50,13 @@ update-mime-database ~/.local/share/mime
 # misc
 mkdir -p {bin,install,work}
 
+# snap (development)
+sudo snap install node --channel=12/stable --classic
+sudo snap install vscode
+sudo snap install --classic go
+# sudo snap install gitkraken
+# sudo snap install insomnia
+
 
 # TODO:
 # - python packages (ipython, numpy, scipy, pandas, scikit, tensorflow, keras,
