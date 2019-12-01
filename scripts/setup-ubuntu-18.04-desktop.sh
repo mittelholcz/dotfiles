@@ -52,8 +52,9 @@ mkdir -p {bin,install,work}
 
 # snap (development)
 sudo snap install node --channel=12/stable --classic
-sudo snap install vscode
-sudo snap install --classic go
+sudo snap install code --classic
+sudo snap install go --classic
+sudo snap install hugo
 # sudo snap install gitkraken
 # sudo snap install insomnia
 
