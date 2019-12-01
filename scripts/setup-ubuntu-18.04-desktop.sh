@@ -27,7 +27,7 @@ sudo ranger --copy-config=all
 # install libreoffice
 sudo apt-get install -y \
     hunspell hunspell-hu \
-    fonts-junicode ttf-mscorefonts-installer \
+    fonts-junicode fonts-firacode ttf-mscorefonts-installer \
     libreoffice-writer libreoffice-calc libreoffice-gnome
 
 # install basic python, C/C++, java
