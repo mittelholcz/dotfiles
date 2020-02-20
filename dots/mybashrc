@@ -270,6 +270,7 @@ alias tmaps='telnet mapscii.me'
 alias tweath='curl wttr.in'
 alias purevim='vim -u $HOME/.vim/purevimrc'
 alias up='sudo apt-get update && sudo apt-get dist-upgrade -y ; sudo apt-get autoremove -y ; sudo apt-get autoclean'
+alias rndpwd='echo $(tr -dc _A-Z-a-z-0-9 < /dev/urandom | head -c8)'
 
 # view markdown files in terminal
 md() {
