@@ -286,3 +286,10 @@ md() {
     fi
     eval $CONVERT | eval $DISPLAY;
 }
+
+# iterate over custom inputs, execute custom commands
+# usage: foreach '[INPUT]...' '[COMMAND]...'
+# use XXX as placeholder in commands for current input
+# example: foreach '*.tsv' 'cut -f1,2 XXX | wc -w'
+foreach() { for inp in $1 ; do bash -c "${2//XXX/$inp}" ; done }
+
