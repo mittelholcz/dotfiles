@@ -262,7 +262,8 @@ fi
 # alias la='ls -A'
 # alias l='ls -CF'
 alias ll='ls -lFvh'
-alias la='ls -AlFvh'
+alias lA='ls -AlFvh'
+alias la='ls -alFvh'
 alias l='ls -CFv'
 
 # misc aliases
