@@ -1,4 +1,4 @@
-all: shell vim
+all: shell tmux vim
 .PHONY: all
 
 
@@ -49,6 +49,13 @@ vim: vim/vimrc
 		vim -u ~/.vim/vimplug +PlugInstall +qall ; }
 	@echo 'Done.'
 .PHONY: vim
+
+
+tmux: dots/tmux.conf
+	@echo '# Tmux: copy config to ~/.tmux.conf'
+	@cp -fb dots/tmux.conf ~/.tmux.conf
+	@echo -e '# To reload ~/.tmux.conf run the command:\ntmux source-file ~/.tmux.conf'
+.PHONY: tmux
 
 
 desktop: scripts/setup-ubuntu-18.04-desktop.sh
